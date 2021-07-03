@@ -1,7 +1,5 @@
 package com.example.foodreciepes.ui.fragments.recipes
 
-import android.net.Network
-import android.net.NetworkRequest
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,10 +8,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.foodreciepes.MainViewModel
+import com.example.foodreciepes.viewmodel.MainViewModel
 import com.example.foodreciepes.R
+import com.example.foodreciepes.viewmodel.RecipesViewModel
 import com.example.foodreciepes.adapters.RecipesAdapter
-import com.example.foodreciepes.util.Constant.API_KEY
 import com.example.foodreciepes.util.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_recipes.view.*
@@ -22,25 +20,41 @@ import kotlinx.android.synthetic.main.fragment_recipes.view.*
 class RecipesFragment : Fragment() {
 
     private lateinit var mainViewModel: MainViewModel
+    private lateinit var recipeViewModel: RecipesViewModel
     private lateinit var mView: View
     private val mAdapter by lazy { RecipesAdapter() }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+        recipeViewModel = ViewModelProvider(requireActivity())[RecipesViewModel::class.java]
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_recipes, container, false)
-        mainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
-
 
         setUpRecyclerView()
-        requestApiData()
+        readDatabase()
         return mView
     }
 
+    private fun readDatabase() {
+        mainViewModel.readRecipes.observe(viewLifecycleOwner,  { database ->
+            if(database.isNotEmpty()) {
+                mAdapter.setData(database[0].foodRecipe)
+                hideShimmerEffect()
+            } else {
+                requestApiData()
+            }
+        })
+    }
+
     private fun requestApiData() {
-        mainViewModel.getRecipes(applyQueries())
+        mainViewModel.getRecipes(recipeViewModel.applyQueries())
         mainViewModel.recipesResponse.observe(viewLifecycleOwner, { response ->
             when (response) {
                 is NetworkResult.Success -> {
@@ -60,19 +74,6 @@ class RecipesFragment : Fragment() {
                 }
             }
         })
-    }
-
-    private fun applyQueries(): HashMap<String, String> {
-        val queries: HashMap<String, String> = HashMap()
-
-        queries["number"] = "50"
-        queries["apiKey"] = API_KEY
-        queries["type"] = "snack"
-        queries["diet"] = "vegan"
-        queries["addRecipeInformation"] = "true"
-        queries["fillIngredients"] = "true"
-
-        return queries
     }
 
     private fun setUpRecyclerView() {

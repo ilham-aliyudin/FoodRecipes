@@ -31,7 +31,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#d2e3fc">
+                android:background="#dadedf">
 
 
                 <ImageView
@@ -80,9 +80,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    app:layout_constraintEnd_toEndOf="@+id/tv_favorite"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="@+id/tv_favorite"
+                    app:layout_constraintStart_toStartOf="@+id/recipe_description"
                     app:layout_constraintTop_toBottomOf="@+id/recipe_description"
                     app:srcCompat="@drawable/ic_heart"
                     app:tint="@color/red" />
@@ -92,20 +90,19 @@
                     setNumberOfLikes="@{result.aggregateLikes}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:text="100"
+                    android:text="10"
                     android:textAlignment="center"
                     android:textColor="@color/red"
-                    app:layout_constraintStart_toEndOf="@+id/iv_recipe"
-                    app:layout_constraintStart_toStartOf="@+id/recipe_description"
+                    app:layout_constraintEnd_toEndOf="@+id/iv_favorite"
+                    app:layout_constraintStart_toStartOf="@+id/iv_favorite"
                     app:layout_constraintTop_toBottomOf="@+id/iv_favorite" />
 
                 <ImageView
                     android:id="@+id/iv_clock"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="@+id/tv_clock"
-                    app:layout_constraintStart_toStartOf="@+id/tv_clock"
+                    android:layout_marginStart="30dp"
+                    app:layout_constraintStart_toEndOf="@+id/iv_favorite"
                     app:layout_constraintTop_toTopOf="@+id/iv_favorite"
                     app:srcCompat="@drawable/ic_clock"
                     app:tint="@color/yellow" />
@@ -115,21 +112,21 @@
                     setNumberOfMinutes="@{result.readyInMinutes}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
                     android:layout_marginTop="1dp"
                     android:text="10min"
                     android:textAlignment="center"
                     android:textColor="@color/yellow"
-                    app:layout_constraintStart_toEndOf="@+id/tv_favorite"
+                    app:layout_constraintEnd_toEndOf="@+id/iv_clock"
+                    app:layout_constraintStart_toStartOf="@+id/iv_clock"
                     app:layout_constraintTop_toBottomOf="@+id/iv_clock" />
 
                 <ImageView
                     android:id="@+id/iv_vegan"
                     setVeganColor="@{result.vegan}"
-                    android:layout_width="27dp"
-                    android:layout_height="21dp"
-                    app:layout_constraintEnd_toEndOf="@+id/tv_vegan"
-                    app:layout_constraintStart_toStartOf="@+id/tv_vegan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    app:layout_constraintStart_toEndOf="@+id/iv_clock"
                     app:layout_constraintTop_toTopOf="@+id/iv_clock"
                     app:srcCompat="@drawable/ic_leaf"
                     app:tint="@color/black" />
@@ -139,13 +136,11 @@
                     setVeganColor="@{result.vegan}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="1dp"
                     android:text="@string/vegan"
                     android:textAlignment="center"
                     android:textColor="@color/black"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_clock"
-                    app:layout_constraintStart_toEndOf="@+id/tv_clock"
+                    app:layout_constraintEnd_toEndOf="@+id/iv_vegan"
+                    app:layout_constraintStart_toStartOf="@+id/iv_vegan"
                     app:layout_constraintTop_toBottomOf="@+id/iv_vegan" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
