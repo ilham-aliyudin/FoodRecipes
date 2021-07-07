@@ -14,6 +14,7 @@ import com.example.foodreciepes.util.Constant.QUERY_API_KEY
 import com.example.foodreciepes.util.Constant.QUERY_DIET
 import com.example.foodreciepes.util.Constant.QUERY_FILL_INGREDIENTS
 import com.example.foodreciepes.util.Constant.QUERY_NUMBER
+import com.example.foodreciepes.util.Constant.QUERY_SEARCH
 import com.example.foodreciepes.util.Constant.QUERY_TYPE
 import com.example.foodreciepes.util.MyExtensionFunction.Companion.showToast
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -37,7 +38,7 @@ class RecipesViewModel @Inject constructor(
     val readBackOnline = dataStoreRepository.readbackOnline.asLiveData()
 
     fun saveMealAndDietType(mealType: String, mealTypeId: Int, dietType: String, dietTypeId: Int) {
-        viewModelScope.launch(Dispatchers.IO){
+        viewModelScope.launch(Dispatchers.IO) {
             dataStoreRepository.saveMealAndDietType(mealType, mealTypeId, dietType, dietTypeId)
         }
     }
@@ -46,6 +47,19 @@ class RecipesViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             dataStoreRepository.saveBackOnline(backOnline)
         }
+    }
+
+    fun applySearchQueries(searchQuery: String): HashMap<String, String> {
+        val queries = HashMap<String, String>()
+
+        queries[QUERY_SEARCH] = searchQuery
+        queries[QUERY_NUMBER] = DEFAULT_RECIPES_NUMBER
+        queries[QUERY_API_KEY] = API_KEY
+        queries[QUERY_ADD_RECIPE_INFORMATION] = "true"
+        queries[QUERY_FILL_INGREDIENTS] = "true"
+
+        return queries
+
     }
 
     fun applyQueries(): HashMap<String, String> {
@@ -69,11 +83,11 @@ class RecipesViewModel @Inject constructor(
     }
 
     fun showNetworkStatus() {
-        if(!networkStatus) {
+        if (!networkStatus) {
             showToast(getApplication(), "You are not connected to Internet")
             saveBackOnline(true)
         } else if (networkStatus) {
-            if(backOnline) {
+            if (backOnline) {
                 showToast(getApplication(), "You are back online")
                 saveBackOnline(false)
             }
