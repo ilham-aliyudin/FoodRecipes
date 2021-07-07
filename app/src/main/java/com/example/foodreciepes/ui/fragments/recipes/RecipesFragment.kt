@@ -1,6 +1,7 @@
 package com.example.foodreciepes.ui.fragments.recipes
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,27 +10,41 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foodreciepes.viewmodel.MainViewModel
 import com.example.foodreciepes.R
 import com.example.foodreciepes.viewmodel.RecipesViewModel
 import com.example.foodreciepes.adapters.RecipesAdapter
 import com.example.foodreciepes.databinding.FragmentRecipesBinding
+import com.example.foodreciepes.util.MyExtensionFunction
+import com.example.foodreciepes.util.MyExtensionFunction.Companion.observeOnce
+import com.example.foodreciepes.util.NetworkListener
 import com.example.foodreciepes.util.NetworkResult
-import com.example.foodreciepes.util.observeOnce
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_recipes.view.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class RecipesFragment : Fragment() {
 
+
+    // SafeArgs initialization
+    private val args by navArgs<RecipesFragmentArgs>()
+
+    // DataBinding Initialization
     private var _binding: FragmentRecipesBinding? = null
     private val binding get() = _binding!!
 
+    // ViewModel and RecyclerView initialization
     private lateinit var mainViewModel: MainViewModel
     private lateinit var recipeViewModel: RecipesViewModel
     private val mAdapter by lazy { RecipesAdapter() }
+
+    // NetworkListener initialization
+    private lateinit var networkListener: NetworkListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,18 +61,38 @@ class RecipesFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.mainViewModel = mainViewModel
 
+
         setUpRecyclerView()
-        readDatabase()
+
+        recipeViewModel.readBackOnline.observe(viewLifecycleOwner , {
+            recipeViewModel.backOnline = it
+        })
+
+        lifecycleScope.launch {
+            networkListener = NetworkListener()
+            networkListener.checkNetworkAvailability(requireContext())
+                .collect { status ->
+                    recipeViewModel.networkStatus = status
+                    recipeViewModel.showNetworkStatus()
+                    readDatabase()
+                }
+        }
+
+
         binding.recipesFab.setOnClickListener {
-            findNavController().navigate(R.id.action_recipesFragment_to_recipesBottomSheet)
+            if (recipeViewModel.networkStatus) {
+                findNavController().navigate(R.id.action_recipesFragment_to_recipesBottomSheet)
+            } else {
+                recipeViewModel.showNetworkStatus()
+            }
         }
         return binding.root
     }
 
     private fun readDatabase() {
         lifecycleScope.launch {
-            mainViewModel.readRecipes.observeOnce(viewLifecycleOwner,  { database ->
-                if(database.isNotEmpty()) {
+            mainViewModel.readRecipes.observeOnce(viewLifecycleOwner, { database ->
+                if (database.isNotEmpty() && !args.backFromBottomSheet) {
                     mAdapter.setData(database[0].foodRecipe)
                     hideShimmerEffect()
                 } else {
@@ -93,7 +128,7 @@ class RecipesFragment : Fragment() {
 
     private fun loadFataFromCache() {
         lifecycleScope.launch {
-            mainViewModel.readRecipes.observe(viewLifecycleOwner, {database ->
+            mainViewModel.readRecipes.observe(viewLifecycleOwner, { database ->
                 if (database.isNotEmpty()) {
                     mAdapter.setData(database[0].foodRecipe)
                 }

@@ -3,7 +3,7 @@ package com.example.foodreciepes.util
 object Constant {
 
     const val BASE_URL = "https://api.spoonacular.com"
-    const val API_KEY = "e47ec71c82f94d5cae1b5d14df53b568"
+    const val API_KEY = "35410d48a173492e8d4b813c04ae7789"
 
     //API Query Key
     const val QUERY_NUMBER = "number"
@@ -22,9 +22,10 @@ object Constant {
     const val DEFAULT_RECIPES_NUMBER = "50"
     const val DEFAULT_MEAL_TYPE = "main course"
     const val DEFAULT_DIET_TYPE = "gluten free"
-    const val PREFERENCES_NAME = ""
+    const val PREFERENCES_NAME = "bottomsheet pref"
     const val PREFERENCES_MEAL_TYPE = "mealType"
     const val PREFERENCES_MEAL_TYPE_ID = "mealTypeId"
     const val PREFERENCES_DIET_TYPE = "dietType"
     const val PREFERENCES_DIET_TYPE_ID = "dietTypeId"
+    const val PREFERENCES_BACK_ONLINE = "backOnline"
 }
