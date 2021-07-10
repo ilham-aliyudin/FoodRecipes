@@ -13,6 +13,7 @@ import com.example.foodreciepes.R
 import com.example.foodreciepes.models.Result
 import com.example.foodreciepes.ui.fragments.recipes.RecipesFragmentArgs
 import com.example.foodreciepes.ui.fragments.recipes.RecipesFragmentDirections
+import org.jsoup.Jsoup
 
 class RecipesRowBinding {
 
@@ -62,12 +63,21 @@ class RecipesRowBinding {
             if (vegan) {
                 when (view) {
                     is TextView -> {
-                        view.setTextColor(ContextCompat.getColor(view.context, R.color.green))
+                        view.setTextColor(ContextCompat.getColor(view.context, R.color.darkGreen))
                     }
                     is ImageView -> {
-                        view.setColorFilter(ContextCompat.getColor(view.context, R.color.green))
+                        view.setColorFilter(ContextCompat.getColor(view.context, R.color.darkGreen))
                     }
                 }
+            }
+        }
+
+        @BindingAdapter("parseHtml")
+        @JvmStatic
+        fun parseHtml(textView: TextView, description: String?) {
+            if (description != null) {
+                val desc = Jsoup.parse(description).text()
+                textView.text = desc
             }
         }
     }

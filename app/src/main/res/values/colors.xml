@@ -14,6 +14,8 @@
     <color name="lightGray">#f9f9f9</color>
     <color name="darkGrey">#4b4b4b</color>
     <color name="medium_grey">#d1d1d1</color>
+    <color name="darkYellow">#ffc30b</color>
+    <color name="darkGreen">#00ab08</color>
 
     //Custom Chip Style
     <color name="checkedChipBackground">#206200EA</color>

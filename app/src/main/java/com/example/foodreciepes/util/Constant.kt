@@ -13,6 +13,10 @@ object Constant {
     const val QUERY_ADD_RECIPE_INFORMATION = "addRecipeInformation"
     const val QUERY_FILL_INGREDIENTS = "fillIngredients"
     const val QUERY_SEARCH = "query"
+    const val BASE_IMAGE_URL = "https://spoonacular.com/cdn/ingredients_100x100/"
+
+    //Parcelable Key
+    const val PARCELIZE_KEY = "recipesBundle"
 
 
     //ROOM Database
