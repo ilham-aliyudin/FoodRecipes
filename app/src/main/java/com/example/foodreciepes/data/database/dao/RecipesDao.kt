@@ -1,9 +1,10 @@
-package com.example.foodreciepes.data.database
+package com.example.foodreciepes.data.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.example.foodreciepes.data.database.entities.RecipesEntity
 import kotlinx.coroutines.flow.Flow
 
 

@@ -6,7 +6,8 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.lifecycle.*
 import com.example.foodreciepes.data.Repository
-import com.example.foodreciepes.data.database.RecipesEntity
+import com.example.foodreciepes.data.database.entities.FavoritesEntity
+import com.example.foodreciepes.data.database.entities.RecipesEntity
 import com.example.foodreciepes.models.FoodRecipe
 import com.example.foodreciepes.util.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,10 +25,29 @@ class MainViewModel @Inject constructor(
 
     /** Room Database */
     var readRecipes: LiveData<List<RecipesEntity>> = repository.local.readDatabase().asLiveData()
+    var readFavoritesRecipes: LiveData<List<FavoritesEntity>> = repository.local.readFavoritesRecipes().asLiveData()
 
     private fun insertRecipes(recipesEntity: RecipesEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.local.insertRecipes(recipesEntity)
+        }
+    }
+
+    fun insertFavoritesRecipes(favoritesEntity: FavoritesEntity) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.local.insertFavoritesRecipes(favoritesEntity)
+        }
+    }
+
+    private fun deleteFavoritesRecipes(favoritesEntity: FavoritesEntity) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.local.deleteFavoriteRecipes(favoritesEntity)
+        }
+    }
+
+    private fun deleteAllFavoritesRecipes() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.local.deleteAllFavoriteRecipes()
         }
     }
 
@@ -46,7 +66,6 @@ class MainViewModel @Inject constructor(
             searchQuerySafeCall(searchQuery)
         }
     }
-
 
     private suspend fun getRecipesSafeCall(queries: Map<String, String>) {
         recipesResponse.value = NetworkResult.Loading()
